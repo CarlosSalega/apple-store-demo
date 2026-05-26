@@ -1,0 +1,267 @@
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║                        DONAAPPLE - PRISMA SCHEMA                              ║
+// ║                  Catálogo de productos + Admin + Landing                     ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ║                                    USER                                       ║
+// ══════════════════════════════════════════════════════════════════════════════
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+}
+
+// ══════════════════════════════════════════════════════════════════════════════════════
+// ║                              ESTRUCTURA DEL CATÁLOGO                          ║
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Marca: Apple, Samsung, etc.
+model Brand {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  isActive  Boolean    @default(true)
+
+  categories Category[]
+  models     Model[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([slug])
+}
+
+// Categoría: iPhone, Mac, iPad, etc.
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  isActive  Boolean  @default(true)
+
+  brandId   String
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  models    Model[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([brandId])
+}
+
+// Modelo: iPhone 13, MacBook Air M3, etc.
+model Model {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  isActive    Boolean   @default(true)
+
+  brandId     String
+  brand       Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  products    Product[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([brandId])
+  @@index([categoryId])
+}
+
+// Variante: 128GB, 256GB, 13", 15", etc.
+// AHORA GLOBAL - sin relación con Modelo (se guarda como JSON en Product)
+model Variant {
+  id   String  @id @default(cuid())
+  name String  @unique // "128GB", "256GB", "13 pulgadas"
+  sku  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ║                                 PRODUCTOS                                     ║
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Product {
+  id          String     @id @default(cuid())
+  title       String     // "iPhone 13 128GB Azul - Batería 85%"
+  slug        String     @unique // SEO friendly: iphone-17-air-128-silver-a123xD
+  description String?
+
+  color       String?   // "Azul", "Space Gray"
+  price       Int        // Mantenemos Int por compatibilidad (se puede cambiar a Decimal)
+  currency    Currency   @default(USD)
+  condition   Condition  @default(USED)
+  isActive    Boolean    @default(true)
+  isFeatured  Boolean    @default(false)
+  stock      Int?      // Stock disponible
+
+  // Relaciones directas
+  modelId     String
+  model       Model     @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  // Múltiples variantes (JSON array de IDs, máximo 3)
+  variantIds String?   @db.Text // JSON: ["variantId1", "variantId2"]
+
+  // Nivel de batería (0-100), ejemplo: 85
+  battery    Int?
+
+  images      Image[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([modelId])
+  @@index([slug])
+}
+
+enum Currency {
+  ARS
+  USD
+}
+
+enum Condition {
+  NEW
+  USED
+  REFURBISHED
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ║                                  IMÁGENES                                     ║
+// ║                        (almacenadas en Cloudinary)                           ║
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Image {
+  id        String   @id @default(cuid())
+  url       String
+  publicId  String   // Cloudinary public_id
+  alt       String?
+  isPrimary Boolean  @default(false)
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ║                              CONFIGURACIÓN DEL SITIO                          ║
+// ║                     (contenido editable de la landing)                        ║
+// ══════════════════════════════════════════════════════════════════════════════
+
+model SiteConfig {
+  id  String @id @default("default")
+  
+  // Banner de urgencia (JSON array de mensajes)
+  bannerMessages   String? @db.Text // JSON: ["mensaje 1", "mensaje 2", "mensaje 3"]
+  bannerEnabled   Boolean @default(false)
+  
+  // Hero Section
+  heroTitle       String? @db.Text
+  heroSubtitle    String? @db.Text
+  heroDescription String? @db.Text
+  heroImage       String?
+  heroCtaPrimary  String?
+  heroCtaSecondary String?
+  heroImages      String? @db.Text // JSON array de URLs
+  
+  // Featured Products (textos)
+  featuredTitle    String?
+  featuredSubtitle String?
+  
+  // Testimonials (textos)
+  testimonialsTitle       String?
+  testimonialsSubtitle    String?
+  testimonialsRatingText  String?
+  testimonialsInstagramCta String?
+  testimonialsInstagramUrl String?
+  
+  // Info del negocio
+  storeName        String?
+  storeWhatsapp   String?
+  storeAddress     String?
+  storeNeighborhood String?
+  storeCity        String?
+  storePhone       String?
+  storeSchedule    String? @db.Text
+  storeInstagram   String?
+  storeEmail       String?
+  storeFeatures    String? @db.Text // JSON array
+  storeFinancingTitle String?
+  storeFinancingSubtitle String?
+  
+  // Métodos de pago
+  paymentMethods  String? @db.Text // JSON array
+  
+  // CTA final
+  ctaTitle        String? @db.Text
+  ctaSubtitle     String? @db.Text
+  ctaDescription  String? @db.Text
+  ctaButtonText   String?
+  ctaBadge1       String?
+  ctaBadge2       String?
+  ctaBadge3       String?
+  
+  // SEO
+  seoTitle        String? @db.Text
+  seoDescription  String? @db.Text
+  
+  // Footer
+  footerBrand     String?
+  footerText      String? @db.Text
+  
+  updatedAt DateTime @updatedAt
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ║                               TESTIMONIOS                                     ║
+// ║                        (gestionados desde el admin)                           ║
+ // ══════════════════════════════════════════════════════════════════════════════
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  avatar    String   // Iniciales para mostrar (ej: "MG")
+  rating    Int      @default(5)
+  text      String   @db.Text
+  product   String?
+  date      String?
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([isActive])
+  @@index([order])
+}

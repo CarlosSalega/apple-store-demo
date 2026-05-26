@@ -1,0 +1,187 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { Logo } from "@/shared/components/ui/logo";
+import { NavUser } from "@/shared/components/nav-user";
+import {
+  useSidebar,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/shared/components/ui/sidebar";
+import {
+  LayoutDashboard,
+  Package,
+  MessageSquare,
+  Megaphone,
+  LayoutTemplate,
+  Star,
+  Store,
+  CreditCard,
+  MousePointerClick,
+  LayoutGrid,
+  Search,
+} from "lucide-react";
+
+const adminNav = {
+  main: [
+    {
+      title: "Panel",
+      url: "/admin",
+      icon: LayoutDashboard,
+    },
+    {
+      title: "Productos",
+      url: "/admin/productos",
+      icon: Package,
+    },
+  ],
+  contenido: [
+    {
+      title: "Banner",
+      url: "/admin/landing/banner",
+      icon: Megaphone,
+    },
+    {
+      title: "Hero",
+      url: "/admin/landing/hero",
+      icon: LayoutTemplate,
+    },
+    {
+      title: "Destacados",
+      url: "/admin/landing/destacados",
+      icon: Star,
+    },
+    {
+      title: "Testimonios",
+      url: "/admin/testimonios",
+      icon: MessageSquare,
+    },
+    {
+      title: "Info del Negocio",
+      url: "/admin/landing/negocio",
+      icon: Store,
+    },
+    {
+      title: "Métodos de Pago",
+      url: "/admin/landing/pago",
+      icon: CreditCard,
+    },
+    {
+      title: "CTA Final",
+      url: "/admin/landing/cta",
+      icon: MousePointerClick,
+    },
+    {
+      title: "Footer",
+      url: "/admin/landing/footer",
+      icon: LayoutGrid,
+    },
+    {
+      title: "SEO",
+      url: "/admin/landing/seo",
+      icon: Search,
+    },
+  ],
+};
+
+interface SidebarNavItem {
+  title: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+function SidebarNav({ items }: { items: SidebarNavItem[] }) {
+  const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+
+  const handleLinkClick = () => setOpenMobile(false);
+
+  const isActive = (url: string) => {
+    if (url === "/admin") {
+      return pathname === "/admin";
+    }
+    return pathname.startsWith(url);
+  };
+
+  return (
+    <SidebarMenu>
+      {items.map((item) => {
+        const active = isActive(item.url);
+        const IconComponent = item.icon;
+
+        return (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton asChild>
+              <Link
+                href={item.url}
+                onClick={handleLinkClick}
+                className={`flex items-center gap-3 ${active ? "bg-accent text-brand ml-4 border" : "ml-4"}`}
+              >
+                <IconComponent
+                  className={`size-4 ${active ? "text-brand" : "text-muted-foreground"}`}
+                />
+                <span>{item.title}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        );
+      })}
+    </SidebarMenu>
+  );
+}
+
+export function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  user?: {
+    name: string;
+    email: string;
+    avatar?: string;
+  } | null;
+}) {
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem className="flex h-16 items-center">
+            <SidebarMenuButton
+              asChild
+              className="h-full data-[slot=sidebar-menu-button]:p-1.5!"
+            >
+              <Link href="/admin">
+                <Logo />
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent className="flex flex-col gap-2">
+        <div className="px-2">
+          <div className="text-muted-foreground mb-2 px-2 text-xs font-medium">
+            Principal
+          </div>
+          <SidebarNav items={adminNav.main} />
+        </div>
+        <div className="px-2">
+          <div className="text-muted-foreground mb-2 px-2 text-xs font-medium">
+            Contenido
+          </div>
+          <SidebarNav items={adminNav.contenido} />
+        </div>
+      </SidebarContent>
+      <SidebarFooter>
+        <div className="border-t"></div>
+        {user && <NavUser user={user} />}
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
