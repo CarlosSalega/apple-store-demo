@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
 import { cn } from "@/shared/lib/utils";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
@@ -8,7 +9,7 @@ import { Toaster } from "@/shared/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://apple-store-demo.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://store-apple-demo.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -144,6 +145,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-right" richColors />
+        <Analytics />
       </body>
     </html>
   );

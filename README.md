@@ -1,4 +1,4 @@
-# 📱 Apple Store Demo
+# 📱 Store Apple Demo
 
 Landing page + catálogo de productos Apple para venta por WhatsApp.
 
