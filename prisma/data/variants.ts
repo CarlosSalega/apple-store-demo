@@ -4,6 +4,9 @@ export const VARIANTS = [
   "256GB",
   "512GB",
   "1TB",
+  "512GB SSD",
+  "1TB SSD",
+  "825GB",
 ] as const;
 
 export type Variant = (typeof VARIANTS)[number];

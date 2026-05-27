@@ -7,10 +7,27 @@ export interface SeedProduct {
   description: string;
   isFeatured?: boolean;
   color?: string;
+  /** Ruta a la imagen principal del producto */
+  imageUrl: string;
 }
 
 export const PRODUCTS: SeedProduct[] = [
-  // iPhone 12 (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 11 Pro Max — 256GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  {
+    modelSlug: "iphone-11-pro-max",
+    variantName: "256GB",
+    condition: "USED",
+    price: 380,
+    description: "Usado. Excelente estado. Batería 83%+.",
+    isFeatured: true,
+    imageUrl: "/images/iphone-11-pro-max-256.jpeg",
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 12 — 128GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-12",
     variantName: "128GB",
@@ -18,9 +35,12 @@ export const PRODUCTS: SeedProduct[] = [
     price: 420,
     description: "Usado. Excelente estado. Batería 85%+.",
     isFeatured: true,
+    imageUrl: "/images/iphone-12-128.jpg",
   },
 
-  // iPhone 13 (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 13 — 128GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-13",
     variantName: "128GB",
@@ -28,9 +48,38 @@ export const PRODUCTS: SeedProduct[] = [
     price: 480,
     description: "Usado. Muy buen estado. Sin detalles.",
     isFeatured: true,
+    imageUrl: "/images/iphone-13-128.avif",
   },
 
-  // iPhone 14 (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 13 — 256GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  {
+    modelSlug: "iphone-13",
+    variantName: "256GB",
+    condition: "USED",
+    price: 550,
+    description: "Usado. Muy buen estado. Batería 88%+.",
+    isFeatured: true,
+    imageUrl: "/images/iphone-13-256.jpg",
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 13 — Base (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  {
+    modelSlug: "iphone-13",
+    variantName: "64GB",
+    condition: "USED",
+    price: 420,
+    description: "Usado. Buen estado. Batería 82%+.",
+    isFeatured: true,
+    imageUrl: "/images/iphone-13.webp",
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 14 — 128GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-14",
     variantName: "128GB",
@@ -38,27 +87,25 @@ export const PRODUCTS: SeedProduct[] = [
     price: 550,
     description: "Usado. Excelente estado. Sin detalles. Incluye cargador.",
     isFeatured: true,
-  },
-  {
-    modelSlug: "iphone-14",
-    variantName: "256GB",
-    condition: "USED",
-    price: 650,
-    description: "Usado. Batería 90%+. Excelente estado. Incluye cargador.",
-    isFeatured: false,
+    imageUrl: "/images/iphone-14-128.webp",
   },
 
-  // iPhone 14 Pro (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 14 Pro — 128GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-14-pro",
-    variantName: "256GB",
+    variantName: "128GB",
     condition: "USED",
-    price: 750,
-    description: "Usado. Batería 88%+. Titanium pristine.",
+    price: 650,
+    description: "Usado. Batería 90%+. Excelente estado.",
     isFeatured: true,
+    imageUrl: "/images/iphone-14-pro-128.webp",
   },
 
-  // iPhone 15 (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 15 — 128GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-15",
     variantName: "128GB",
@@ -66,45 +113,25 @@ export const PRODUCTS: SeedProduct[] = [
     price: 700,
     description: "Usado. Batería 92%+. Sin detalles.",
     isFeatured: true,
-  },
-  {
-    modelSlug: "iphone-15",
-    variantName: "256GB",
-    condition: "USED",
-    price: 800,
-    description: "Usado. Batería 90%+. Perfecto estado.",
-    isFeatured: false,
+    imageUrl: "/images/iphone-15-128.jpg",
   },
 
-  // iPhone 15 Plus (USED)
-  {
-    modelSlug: "iphone-15-plus",
-    variantName: "256GB",
-    condition: "USED",
-    price: 850,
-    description: "Usado. Batería 85%+. Like new.",
-    isFeatured: false,
-  },
-
-  // iPhone 15 Pro (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 15 Pro — 256GB (USED)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-15-pro",
     variantName: "256GB",
     condition: "USED",
     price: 1000,
-    description: "Usado. Batería 85%+. Titanium pristine.",
-    isFeatured: false,
-  },
-  {
-    modelSlug: "iphone-15-pro",
-    variantName: "512GB",
-    condition: "USED",
-    price: 1100,
     description: "Usado. Batería 87%+. Excelente estado.",
-    isFeatured: false,
+    isFeatured: true,
+    imageUrl: "/images/iphone-15-pro-256.webp",
   },
 
-  // iPhone 16 (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 16 — 128GB (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-16",
     variantName: "128GB",
@@ -112,111 +139,58 @@ export const PRODUCTS: SeedProduct[] = [
     price: 899,
     description: "Nuevo sellado. Garantía Apple 1 año.",
     isFeatured: true,
-  },
-  {
-    modelSlug: "iphone-16",
-    variantName: "256GB",
-    condition: "NEW",
-    price: 999,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
+    imageUrl: "/images/iphone-16-128.avif",
   },
 
-  // iPhone 16 Plus (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 16e — 128GB (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
-    modelSlug: "iphone-16-plus",
-    variantName: "256GB",
-    condition: "NEW",
-    price: 1099,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
-  },
-
-  // iPhone 16 Pro (NEW)
-  {
-    modelSlug: "iphone-16-pro",
-    variantName: "256GB",
-    condition: "NEW",
-    price: 1199,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
-  },
-  {
-    modelSlug: "iphone-16-pro",
-    variantName: "512GB",
-    condition: "NEW",
-    price: 1399,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
-  },
-  {
-    modelSlug: "iphone-16-pro",
-    variantName: "1TB",
-    condition: "NEW",
-    price: 1599,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
-  },
-
-  // iPhone 17 (NEW)
-  {
-    modelSlug: "iphone-17",
+    modelSlug: "iphone-16e",
     variantName: "128GB",
     condition: "NEW",
-    price: 949,
+    price: 599,
     description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
+    isFeatured: true,
+    imageUrl: "/images/iphone-16e-128.webp",
   },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 17 — 256GB (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
     modelSlug: "iphone-17",
     variantName: "256GB",
     condition: "NEW",
     price: 1049,
     description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
+    isFeatured: true,
+    imageUrl: "/images/iphone-17-256.jpg",
   },
 
-  // iPhone 17 Pro (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone 17 Pro Max — 256GB (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
-    modelSlug: "iphone-17-pro",
+    modelSlug: "iphone-17-pro-max",
     variantName: "256GB",
     condition: "NEW",
-    price: 1249,
+    price: 1299,
     description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
-  },
-  {
-    modelSlug: "iphone-17-pro",
-    variantName: "512GB",
-    condition: "NEW",
-    price: 1449,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
-  },
-  {
-    modelSlug: "iphone-17-pro",
-    variantName: "1TB",
-    condition: "NEW",
-    price: 1649,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
+    isFeatured: true,
+    imageUrl: "/images/iphone-17-pro-max-256.webp",
   },
 
-  // iPhone 17 Air (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
+  // iPhone Air — 128GB (NEW)
+  // ══════════════════════════════════════════════════════════════════════════════
   {
-    modelSlug: "iphone-17-air",
-    variantName: "256GB",
+    modelSlug: "iphone-air",
+    variantName: "128GB",
     condition: "NEW",
-    price: 1149,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
-  },
-  {
-    modelSlug: "iphone-17-air",
-    variantName: "512GB",
-    condition: "NEW",
-    price: 1349,
-    description: "Nuevo sellado. Garantía Apple 1 año.",
-    isFeatured: false,
+    price: 799,
+    description: "Nuevo sellado. Garantía Apple 1 año. Equipo ultra delgado.",
+    isFeatured: true,
+    imageUrl: "/images/iphone-air-128.webp",
   },
 ];

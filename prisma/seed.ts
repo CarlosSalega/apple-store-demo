@@ -143,13 +143,20 @@ async function main() {
     }
 
     const modelInfo = MODELS.find((m) => m.slug === p.modelSlug);
-    // Model name sin "iPhone" - solo "14 Pro" porque category ya es "iPhone"
-    const modelNameClean =
-      modelInfo?.name.replace(/^iPhone\s+/i, "").trim() || p.modelSlug;
+    const categoryInfo = CATEGORIES.find(
+      (c) => c.slug === modelInfo?.categorySlug,
+    );
+    const brandInfo = BRANDS.find((b) => b.slug === modelInfo?.brandSlug);
 
-    // Generar título automáticamente: Apple iPhone 14 Pro 256GB
-    const brandName = "Apple";
-    const categoryName = "iPhone";
+    const brandName = brandInfo?.name || "Apple";
+    const categoryName = categoryInfo?.name || "iPhone";
+
+    // Sacar el prefijo del modelo (ej: "iPhone 14 Pro" → "14 Pro"; "MacBook Pro" → "Pro")
+    const modelNameClean =
+      modelInfo?.name.replace(/^(iPhone|MacBook|PlayStation)\s+/i, "").trim() ||
+      p.modelSlug;
+
+    // Generar título: Apple iPhone 14 Pro 256GB | Apple MacBook Pro 512GB SSD, etc.
     const variantDisplay = p.variantName;
 
     let productTitle = `${brandName} ${categoryName} ${modelNameClean} ${variantDisplay}`;
@@ -157,7 +164,6 @@ async function main() {
       productTitle += ` ${p.color}`;
     }
 
-    // Agregar info de batería en la descripción para usados
     const productDescription = p.description;
 
     const slug = generateProductSlug({
@@ -166,7 +172,7 @@ async function main() {
       modelName: modelNameClean,
       variantName: p.variantName,
       color: p.color,
-      withSuffix: true, // Siempre agregar nanoId para URLs únicas
+      withSuffix: true,
     });
 
     const condition = p.condition === "NEW" ? Condition.NEW : Condition.USED;
@@ -199,21 +205,45 @@ async function main() {
       },
     });
 
-    // Crear imagen placeholder
+    // ── Crear imágenes ──────────────────────────────────────────
     const product = await prisma.product.findUnique({ where: { slug } });
-    if (product) {
-      await prisma.image.upsert({
-        where: { id: `${product.id}-primary` },
-        update: {},
-        create: {
-          id: `${product.id}-primary`,
-          url: "/images/placeholder.webp",
-          publicId: "placeholder",
-          alt: p.title,
-          isPrimary: true,
-          productId: product.id,
-        },
-      });
+    if (!product) continue;
+
+    // Imagen principal
+    const primaryUrl = p.imageUrl || "/images/placeholder.webp";
+    await prisma.image.upsert({
+      where: { id: `${product.id}-primary` },
+      update: {},
+      create: {
+        id: `${product.id}-primary`,
+        url: primaryUrl,
+        publicId: p.imageUrl
+          ? p.imageUrl.split("/").pop()?.replace(/\.[^.]+$/, "") || "product"
+          : "placeholder",
+        alt: p.title,
+        isPrimary: true,
+        productId: product.id,
+      },
+    });
+
+    // Imágenes adicionales
+    if (p.images) {
+      for (let i = 0; i < p.images.length; i++) {
+        const imgUrl = p.images[i];
+        await prisma.image.upsert({
+          where: { id: `${product.id}-extra-${i + 1}` },
+          update: {},
+          create: {
+            id: `${product.id}-extra-${i + 1}`,
+            url: imgUrl,
+            publicId:
+              imgUrl.split("/").pop()?.replace(/\.[^.]+$/, "") || "product",
+            alt: p.title,
+            isPrimary: false,
+            productId: product.id,
+          },
+        });
+      }
     }
   }
 

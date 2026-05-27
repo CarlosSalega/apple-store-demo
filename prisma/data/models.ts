@@ -1,4 +1,12 @@
 export const MODELS = [
+  // iPhone 11 series
+  {
+    name: "iPhone 11 Pro Max",
+    slug: "iphone-11-pro-max",
+    categorySlug: "iphone",
+    brandSlug: "apple",
+  },
+
   // iPhone 12 series
   {
     name: "iPhone 12",
@@ -87,6 +95,14 @@ export const MODELS = [
     brandSlug: "apple",
   },
 
+  // iPhone 16e
+  {
+    name: "iPhone 16e",
+    slug: "iphone-16e",
+    categorySlug: "iphone",
+    brandSlug: "apple",
+  },
+
   // iPhone 17 series
   {
     name: "iPhone 17",
@@ -101,8 +117,22 @@ export const MODELS = [
     brandSlug: "apple",
   },
   {
+    name: "iPhone 17 Pro Max",
+    slug: "iphone-17-pro-max",
+    categorySlug: "iphone",
+    brandSlug: "apple",
+  },
+  {
     name: "iPhone 17 Air",
     slug: "iphone-17-air",
+    categorySlug: "iphone",
+    brandSlug: "apple",
+  },
+
+  // iPhone Air
+  {
+    name: "iPhone Air",
+    slug: "iphone-air",
     categorySlug: "iphone",
     brandSlug: "apple",
   },
