@@ -9,6 +9,8 @@ export interface SeedProduct {
   color?: string;
   /** Ruta a la imagen principal del producto */
   imageUrl: string;
+  /** Imágenes adicionales (galería) */
+  images?: string[];
 }
 
 export const PRODUCTS: SeedProduct[] = [
