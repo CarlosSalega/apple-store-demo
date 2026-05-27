@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronLeft, ChevronRight } from "@/shared/components/ui";
+import { useCarousel } from "@/shared/hooks/useCarousel";
 import { ButtonLinkGhost } from "@/shared/components/ui/button-link";
 
 interface Testimonial {
@@ -14,6 +16,8 @@ interface Testimonial {
 
 interface TestimonialsSliderProps {
   testimonials: Testimonial[];
+  title?: string;
+  subtitle?: string;
   instagramCta?: string;
   instagramUrl?: string;
 }
@@ -64,10 +68,10 @@ function TestimonialCard({
         </div>
       </div>
 
-      <p className="text-text-secondary">{text}</p>
+      <p className="text-text-secondary line-clamp-4">{text}</p>
 
       {product && (
-        <div className="bg-surface-muted mt-4 flex items-center gap-2 rounded-lg px-3 py-2">
+        <div className="bg-surface-muted mt-auto flex items-center gap-2 rounded-lg px-3 py-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -110,31 +114,130 @@ function InstagramIconSvg() {
 
 export function TestimonialsSlider({
   testimonials,
+  title,
+  subtitle,
   instagramCta = "Seguinos en Instagram",
   instagramUrl = "https://instagram.com",
 }: TestimonialsSliderProps) {
+  const {
+    trackRef,
+    sectionRef,
+    canScrollLeft,
+    canScrollRight,
+    mounted,
+    isDragging,
+    keyboardHelpId,
+    scrollByDirection,
+    onMouseDown,
+    onMouseMove,
+    stopDrag,
+    handleFocus,
+    handleBlur,
+    handleMouseEnter,
+    handleMouseLeave,
+  } = useCarousel({ itemSelector: "[data-testimonial-slide]" });
+
   return (
-    <>
-      <div className="scrollbar-hide flex gap-6 overflow-x-auto pb-4">
-        {testimonials.map((testimonial) => (
-          <div
-            key={testimonial.id}
-            className="w-[clamp(300px,85vw,380px)] shrink-0 snap-start"
-          >
-            <TestimonialCard {...testimonial} />
+    <section
+      ref={sectionRef}
+      className="bg-surface relative w-full overflow-x-clip px-4 py-16 md:px-16 lg:px-24"
+      tabIndex={0}
+      aria-label={title || "Testimonios"}
+      aria-describedby={keyboardHelpId}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+    >
+      <p id={keyboardHelpId} className="sr-only">
+        Usá las flechas izquierda y derecha para desplazarte por los testimonios.
+      </p>
+
+      {/* ── Header ─────────────────────────────────────────────── */}
+      <div
+        className={`mx-auto mb-10 flex max-w-7xl items-end justify-between transition-all duration-700 ${
+          mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+        }`}
+      >
+        <div className="flex flex-col gap-1">
+          {title && (
+            <h2 className="text-text-primary text-2xl font-bold md:text-3xl">
+              {title}
+            </h2>
+          )}
+          {subtitle && (
+            <p className="text-text-secondary mt-1">{subtitle}</p>
+          )}
+        </div>
+
+        {testimonials.length > 0 && (
+          <div className="flex items-center gap-2 md:gap-3">
+            <button
+              onClick={() => scrollByDirection("left")}
+              disabled={!canScrollLeft}
+              aria-label="Anterior"
+              className="border-border bg-surface text-text-primary hover:bg-surface-muted disabled:hover:bg-surface flex h-11 w-11 items-center justify-center rounded-full border transition-all hover:scale-105 active:scale-95 disabled:cursor-default disabled:opacity-25 disabled:hover:scale-100"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => scrollByDirection("right")}
+              disabled={!canScrollRight}
+              aria-label="Siguiente"
+              className="border-border bg-surface text-text-primary hover:bg-surface-muted disabled:hover:bg-surface flex h-11 w-11 items-center justify-center rounded-full border transition-all hover:scale-105 active:scale-95 disabled:cursor-default disabled:opacity-25 disabled:hover:scale-100"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
-        ))}
+        )}
       </div>
 
-      <div className="mt-10 flex flex-col items-center">
-        <ButtonLinkGhost
-          href={instagramUrl}
-          external
-          icon={<InstagramIconSvg />}
+      {/* ── Viewport + Track ───────────────────────────────────── */}
+      {testimonials.length > 0 && (
+        <div className="mx-auto max-w-7xl">
+          <div
+            ref={trackRef}
+            className="flex [scroll-snap-type:x_mandatory] gap-6 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            style={{ cursor: isDragging.current ? "grabbing" : "grab" }}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={stopDrag}
+            onMouseLeave={stopDrag}
+          >
+            {testimonials.map((testimonial, i) => (
+              <div
+                key={testimonial.id}
+                data-testimonial-slide
+                className={`w-[clamp(300px,85vw,380px)] shrink-0 snap-start transition-all duration-700 ${
+                  mounted
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-6 opacity-0"
+                }`}
+                style={{ transitionDelay: mounted ? `${i * 60}ms` : "0ms" }}
+              >
+                <TestimonialCard {...testimonial} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Footer Instagram ───────────────────────────────────── */}
+      {testimonials.length > 0 && (
+        <div
+          className={`mx-auto mt-10 flex max-w-7xl flex-col items-center transition-all delay-500 duration-700 ${
+            mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+          }`}
         >
-          {instagramCta}
-        </ButtonLinkGhost>
-      </div>
-    </>
+          <ButtonLinkGhost
+            href={instagramUrl}
+            external
+            icon={<InstagramIconSvg />}
+          >
+            {instagramCta}
+          </ButtonLinkGhost>
+        </div>
+      )}
+    </section>
   );
 }

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { HeroSection, FeaturedSection } from "@/features/home";
+import { HeroSection, FeaturedProductsSection } from "@/features/home";
 import { TestimonialsSection } from "@/features/social/components/TestimonialsSection";
 import { FinalCTA } from "@/features/social/components/FinalCTA";
 import { StoreInfoSection } from "@/features/store/components/StoreInfoSection";
@@ -123,8 +123,7 @@ export default async function Home() {
       
       <HeroSection id="inicio" {...heroProps} />
 
-      <FeaturedSection
-        id="productos"
+      <FeaturedProductsSection
         title={config.featuredTitle || "Productos Destacados"}
         subtitle={config.featuredSubtitle}
       />
